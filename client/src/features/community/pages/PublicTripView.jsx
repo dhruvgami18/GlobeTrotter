@@ -22,6 +22,7 @@ import {
 import Button from '../../../components/ui/Button';
 import Loading from '../../../components/ui/Loading';
 import EmptyState from '../../../components/ui/EmptyState';
+import TripMap from '../../map/components/TripMap';
 import { useAuth } from '../../../context/AuthContext';
 import communityService from '../../../services/communityService';
 import { formatShortDate } from '../../../utils/dateUtils';
@@ -33,6 +34,7 @@ export default function PublicTripView() {
   const { user, isAuthenticated } = useAuth();
 
   const [trip, setTrip] = useState(null);
+  const [viewMode, setViewMode] = useState('itinerary'); // 'itinerary' | 'map'
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -325,12 +327,45 @@ export default function PublicTripView() {
         </div>
       </div>
 
-      {/* Cities Route Breakdown */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
-        <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-brand-600" />
-          <span>Route & City Stops</span>
-        </h3>
+      {/* View Mode Switcher */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1 bg-white p-1 rounded-2xl border border-slate-200 shadow-xs">
+          <button
+            type="button"
+            onClick={() => setViewMode('itinerary')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              viewMode === 'itinerary'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Itinerary Schedule
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('map')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              viewMode === 'map'
+                ? 'bg-brand-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5" />
+            Interactive Route Map
+          </button>
+        </div>
+      </div>
+
+      {viewMode === 'map' ? (
+        <TripMap stops={tripStops} itineraryItems={itineraryItems} />
+      ) : (
+        <>
+          {/* Cities Route Breakdown */}
+          <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
+            <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-brand-600" />
+              <span>Route & City Stops</span>
+            </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {tripStops.map((stop, index) => (
@@ -451,6 +486,8 @@ export default function PublicTripView() {
           </div>
         )}
       </div>
+      </>
+      )}
 
       {/* Bottom Sticky Action Banner */}
       <div className="sticky bottom-6 bg-slate-900/95 backdrop-blur-md text-white p-4 sm:p-5 rounded-3xl shadow-2xl border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">

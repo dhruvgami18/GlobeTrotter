@@ -29,6 +29,7 @@ import StopSection from '../components/StopSection';
 import ActivitySearchModal from '../../activities/components/ActivitySearchModal';
 import ActivityModal from '../components/ActivityModal';
 import ShareTripModal from '../../community/components/ShareTripModal';
+import TripMap from '../../map/components/TripMap';
 import ConfirmDialog from '../../../components/ui/ConfirmDialog';
 import Button from '../../../components/ui/Button';
 import PageHeader from '../../../components/layout/PageHeader';
@@ -353,7 +354,7 @@ export default function ItineraryBuilder() {
             </Link>
           </div>
 
-          {/* List vs Timeline View Toggle */}
+          {/* List vs Timeline vs Map View Toggle */}
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 self-start sm:self-center">
             <button
               type="button"
@@ -379,6 +380,18 @@ export default function ItineraryBuilder() {
               <GitCommit className="w-3.5 h-3.5" />
               Timeline View
             </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('map')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                viewMode === 'map'
+                  ? 'bg-brand-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5" />
+              Map View
+            </button>
           </div>
         </div>
       </div>
@@ -390,6 +403,18 @@ export default function ItineraryBuilder() {
           description="Add your first city stop to begin planning activities, tours, and day schedules."
           icon={Compass}
         />
+      ) : viewMode === 'map' ? (
+        <div className="space-y-6">
+          <TripMap
+            stops={stops}
+            itineraryItems={items}
+            onSelectStop={(stop) => {
+              setViewMode('list');
+              setSearchTargetStopId(stop.id);
+            }}
+            onSelectActivity={(item) => setEditingItem(item)}
+          />
+        </div>
       ) : (
         <DndContext
           sensors={sensors}

@@ -57,7 +57,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`🌍 GlobeTrotter Server running on http://localhost:${PORT}`);
     console.log(`🔐 Auth API:        http://localhost:${PORT}/api/auth`);
     console.log(`👤 Profile API:     http://localhost:${PORT}/api/profile`);

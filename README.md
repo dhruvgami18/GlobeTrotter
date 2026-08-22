@@ -170,7 +170,7 @@ Ensure [`server/.env`](file:///c:/Projects/GlobeTrotter/server/.env) exists with
 PORT=5000
 NODE_ENV=development
 DATABASE_URL="file:./dev.db"
-JWT_SECRET="globetrotter-super-secret-jwt-key-2026"
+JWT_SECRET="Your_secret_key_here"
 ```
 
 Push the Prisma schema and seed initial Indian destinations, trips, activities, and expenses:
@@ -299,9 +299,3 @@ npm run dev
    - Inspect 5 KPI metric cards, Recharts visualizations, User management directory, and Platform trip table.
 
 ---
-
-## 📄 License & Attribution
-
-- **Project**: GlobeTrotter Travel Planning Platform
-- **License**: MIT
-- **Design & UI**: Tailwind CSS, Recharts & Lucide Icons
