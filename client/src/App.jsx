@@ -6,6 +6,8 @@ import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AdminRoute from './routes/AdminRoute';
 
+import LandingPage from './features/landing/pages/LandingPage';
+
 // Member 1 Pages
 import Login from './features/auth/pages/Login';
 import Register from './features/auth/pages/Register';
@@ -52,6 +54,9 @@ export default function App() {
           <Toaster />
 
           <Routes>
+            {/* Public landing page */}
+            <Route path="/" element={<LandingPage />} />
+
             {/* Public auth routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -75,7 +80,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<RootRedirect />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
 
@@ -117,7 +121,7 @@ export default function App() {
               />
             </Route>
 
-            <Route path="*" element={<RootRedirect />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </BrowserRouter>
