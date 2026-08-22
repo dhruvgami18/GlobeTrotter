@@ -48,6 +48,8 @@ model City {
   imageUrl          String?
   costIndex         Float              @default(50)
   popularityScore   Float              @default(80)
+  latitude          Float?
+  longitude         Float?
   createdAt         DateTime           @default(now())
 
   activities        Activity[]
@@ -65,6 +67,8 @@ model Activity {
   estimatedCost  Float
   imageUrl       String
   rating         Float           @default(4.5)
+  latitude       Float?
+  longitude      Float?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
