@@ -125,11 +125,11 @@ export default function ExpenseModal({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Amount Field */}
           <Input
-            label="Amount ($ USD) *"
+            label="Amount (₹ INR) *"
             type="number"
-            step="0.01"
+            step="1"
             min="0"
-            placeholder="140.00"
+            placeholder="3500"
             value={formData.amount}
             onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
             required

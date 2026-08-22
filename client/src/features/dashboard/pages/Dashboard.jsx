@@ -176,9 +176,9 @@ export default function Dashboard() {
           </div>
 
           <Input
-            label="Target Budget ($ USD)"
+            label="Target Budget (₹ INR)"
             type="number"
-            placeholder="2500"
+            placeholder="45000"
             value={newTripData.budget}
             onChange={(e) => setNewTripData({ ...newTripData, budget: e.target.value })}
           />

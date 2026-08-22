@@ -103,14 +103,14 @@ export default function ActivityFilters({
             <input
               type="range"
               min="0"
-              max="200"
-              step="5"
-              value={filters.maxCost || 200}
+              max="15000"
+              step="250"
+              value={filters.maxCost || 15000}
               onChange={(e) => onChange({ ...filters, maxCost: Number(e.target.value) })}
               className="w-20 sm:w-24 accent-brand-600 cursor-pointer"
             />
-            <span className="font-bold text-slate-800 min-w-8 text-right">
-              ${filters.maxCost || 200}
+            <span className="font-bold text-slate-800 min-w-12 text-right">
+              ₹{(filters.maxCost || 15000).toLocaleString('en-IN')}
             </span>
           </div>
 

@@ -43,11 +43,11 @@ model City {
   id                Int                @id @default(autoincrement())
   name              String
   country           String
-  region            String
+  region            String?            @default("Global")
   description       String?
   imageUrl          String?
-  costIndex         Float              @default(0)
-  popularityScore   Float              @default(0)
+  costIndex         Float              @default(50)
+  popularityScore   Float              @default(80)
   createdAt         DateTime           @default(now())
 
   activities        Activity[]

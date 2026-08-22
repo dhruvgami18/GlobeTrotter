@@ -190,14 +190,13 @@ export default function ActivityModal({
         {/* Custom Cost */}
         <div>
           <Input
-            label="Cost ($ USD)"
+            label="Cost (₹ INR)"
             type="number"
-            step="0.01"
+            step="1"
             min="0"
-            placeholder="0.00"
-            icon={DollarSign}
+            placeholder="0"
             error={errors.customCost?.message}
-            helperText={`Default estimated cost: $${activeActivity?.estimatedCost ?? 0}`}
+            helperText={`Default estimated cost: ₹${activeActivity?.estimatedCost ?? 0}`}
             {...register('customCost')}
           />
         </div>

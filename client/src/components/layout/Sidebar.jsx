@@ -11,6 +11,8 @@ import {
   Home,
   PlusCircle,
   Users,
+  ShieldCheck,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../ui/Button';
@@ -20,47 +22,61 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const mainLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: Home },
-    { name: 'My Trips', path: '/trips/1/itinerary', icon: Calendar },
-    { name: 'Explore', path: '/activities', icon: MapPin },
+    { name: 'My Trips', path: '/trips', icon: Calendar },
+    { name: 'Cities', path: '/cities', icon: Compass },
+    { name: 'Activities', path: '/activities', icon: MapPin },
     { name: 'Community', path: '/community', icon: Users },
     ...(user?.role === 'ADMIN'
-      ? [{ name: 'Admin Dashboard', path: '/admin', icon: Sparkles }]
+      ? [{ name: 'Admin Dashboard', path: '/admin', icon: ShieldCheck }]
       : []),
   ];
 
   return (
     <>
-      {/* Mobile Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-xs lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {/* Slide-over Backdrop (only visible when isOpen) */}
+      <div
+        className={`fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
+      {/* Drawer Panel */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 z-50 w-64 bg-slate-900 text-white flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 left-0 bottom-0 z-50 w-72 bg-slate-900 text-white flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } border-r border-slate-800`}
       >
         <div>
-          {/* Brand Header */}
-          <div className="h-16 px-6 flex items-center gap-3 border-b border-slate-800">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-              <Globe className="w-5 h-5" />
+          {/* Brand & Close Header */}
+          <div className="h-16 px-6 flex items-center justify-between border-b border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                <Globe className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-base font-extrabold tracking-tight text-white block">
+                  GlobeTrotter
+                </span>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-brand-400">
+                  Travel Planner
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="text-base font-extrabold tracking-tight text-white block">
-                GlobeTrotter
-              </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-brand-400">
-                Travel Planner
-              </span>
-            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              title="Close Menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-4 space-y-1">
+          <nav className="p-4 space-y-1.5">
             {mainLinks.map((link) => {
               const Icon = link.icon;
               return (
@@ -91,7 +107,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <NavLink
                 to="/profile"
                 onClick={onClose}
-                className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-800/80 transition-colors group"
+                className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition-colors group"
               >
                 <img
                   src={

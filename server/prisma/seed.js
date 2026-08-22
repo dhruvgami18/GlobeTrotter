@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seed for GlobeTrotter...');
+  console.log('🌱 Starting database seed for GlobeTrotter (Indian Destinations & INR Pricing)...');
 
   // Clean existing tables
   await prisma.expense.deleteMany();
@@ -15,61 +15,142 @@ async function main() {
   await prisma.city.deleteMany();
   await prisma.user.deleteMany();
 
-  // Create default demo user (demo@globetrotter.com / demo123)
+  // Create default demo user (Rahul Sharma / demo@globetrotter.com / demo123)
   const passwordHash = await bcrypt.hash('demo123', 10);
   const demoUser = await prisma.user.create({
     data: {
-      firstName: 'Alex',
-      lastName: 'Explorer',
+      firstName: 'Rahul',
+      lastName: 'Sharma',
       email: 'demo@globetrotter.com',
       passwordHash,
-      phone: '+1 (555) 234-5678',
-      city: 'San Francisco',
-      country: 'United States',
-      bio: 'Passionate globetrotter, culture enthusiast, and street-food adventurer.',
+      phone: '+91 98765 43210',
+      city: 'Mumbai',
+      country: 'India',
+      bio: 'Passionate globetrotter, culture enthusiast, street-food lover, and Himalayan trekker.',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+      language: 'Hindi',
+      role: 'USER',
+    },
+  });
+
+  // Create alias for rahul@globetrotter.com / rahul123
+  const rahulHash = await bcrypt.hash('rahul123', 10);
+  await prisma.user.create({
+    data: {
+      firstName: 'Rahul',
+      lastName: 'Sharma',
+      email: 'rahul@globetrotter.com',
+      passwordHash: rahulHash,
+      phone: '+91 98765 43211',
+      city: 'Delhi',
+      country: 'India',
+      bio: 'Passionate travel planner and heritage explorer.',
       language: 'English',
       role: 'USER',
     },
   });
 
-  // Create demo admin user
+  // Create demo admin user (admin@globetrotter.com / admin123)
+  const adminHash = await bcrypt.hash('admin123', 10);
   await prisma.user.create({
     data: {
       firstName: 'Admin',
       lastName: 'User',
       email: 'admin@globetrotter.com',
-      passwordHash: await bcrypt.hash('admin123', 10),
+      passwordHash: adminHash,
+      phone: '+91 99999 88888',
+      city: 'Bengaluru',
+      country: 'India',
+      bio: 'GlobeTrotter system administrator and platform curator.',
       language: 'English',
       role: 'ADMIN',
     },
   });
 
-  // 1. Create Cities
-  const tokyo = await prisma.city.create({
+  console.log('✅ Created demo users (Rahul Sharma & Admin User)');
+
+  // 1. Create Indian & Global Cities
+  const goa = await prisma.city.create({
     data: {
-      name: 'Tokyo',
-      country: 'Japan',
-      description: 'The bustling capital of Japan, blending ultramodern neon skyscrapers with historic temples and world-class gastronomy.',
-      imageUrl: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80',
+      name: 'Goa',
+      country: 'India',
+      region: 'Goa',
+      costIndex: 55,
+      popularityScore: 98,
+      description: 'Sun-kissed tropical paradise known for golden beaches, vibrant shacks, Portuguese architecture, water sports, and electrifying nightlife.',
+      imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
     },
   });
 
-  const kyoto = await prisma.city.create({
+  const jaipur = await prisma.city.create({
     data: {
-      name: 'Kyoto',
-      country: 'Japan',
-      description: 'The ancient imperial capital famous for classical Buddhist temples, gardens, imperial palaces, Shinto shrines, and geishas.',
-      imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80',
+      name: 'Jaipur',
+      country: 'India',
+      region: 'Rajasthan',
+      costIndex: 45,
+      popularityScore: 96,
+      description: 'The Pink City of royalty, featuring majestic hilltop forts, opulent palaces, vibrant bazaars, and legendary Rajasthani hospitality.',
+      imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
     },
   });
 
-  const osaka = await prisma.city.create({
+  const varanasi = await prisma.city.create({
     data: {
-      name: 'Osaka',
-      country: 'Japan',
-      description: 'Japan\'s street-food capital known for modern architecture, vibrant nightlife, and towering Osaka Castle.',
-      imageUrl: 'https://images.unsplash.com/photo-1590559899731-a3f07b743759?auto=format&fit=crop&w=1200&q=80',
+      name: 'Varanasi',
+      country: 'India',
+      region: 'Uttar Pradesh',
+      costIndex: 35,
+      popularityScore: 94,
+      description: 'The spiritual capital of India on the sacred banks of the Ganges, renowned for ancient ghats, evening aartis, and centuries of mysticism.',
+      imageUrl: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80',
+    },
+  });
+
+  const manali = await prisma.city.create({
+    data: {
+      name: 'Manali',
+      country: 'India',
+      region: 'Himachal Pradesh',
+      costIndex: 50,
+      popularityScore: 95,
+      description: 'Scenic Himalayan valley enveloped in pine forests, snow peaks, roaring rivers, adventurous trails, and serene apple orchards.',
+      imageUrl: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
+    },
+  });
+
+  const munnar = await prisma.city.create({
+    data: {
+      name: 'Munnar & Kochi',
+      country: 'India',
+      region: 'Kerala',
+      costIndex: 48,
+      popularityScore: 92,
+      description: 'God’s Own Country with emerald rolling tea estates, tranquil palm-lined backwaters, spice gardens, and historic colonial port heritage.',
+      imageUrl: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80',
+    },
+  });
+
+  const mumbai = await prisma.city.create({
+    data: {
+      name: 'Mumbai',
+      country: 'India',
+      region: 'Maharashtra',
+      costIndex: 70,
+      popularityScore: 97,
+      description: 'The energetic City of Dreams, boasting Victorian Gothic architecture, the iconic Marine Drive promenade, Bollywood, and eclectic street food.',
+      imageUrl: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80',
+    },
+  });
+
+  const delhi = await prisma.city.create({
+    data: {
+      name: 'Delhi & Agra',
+      country: 'India',
+      region: 'Delhi NCR / UP',
+      costIndex: 50,
+      popularityScore: 98,
+      description: 'Heart of India featuring the magnificent Taj Mahal, Red Fort, Chandni Chowk bazaars, and timeless Mughal architectural marvels.',
+      imageUrl: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
     },
   });
 
@@ -77,655 +158,577 @@ async function main() {
     data: {
       name: 'Paris',
       country: 'France',
+      region: 'Europe',
+      costIndex: 85,
+      popularityScore: 96,
       description: 'The City of Light, global center for art, fashion, gastronomy, and culture with iconic monuments like the Eiffel Tower and Louvre.',
       imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80',
     },
   });
 
-  const london = await prisma.city.create({
+  const tokyo = await prisma.city.create({
     data: {
-      name: 'London',
-      country: 'United Kingdom',
-      description: 'A 21st-century city with history stretching to Roman times, home to Big Ben, Tower Bridge, and rich theater life.',
-      imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80',
+      name: 'Tokyo',
+      country: 'Japan',
+      region: 'Asia',
+      costIndex: 78,
+      popularityScore: 98,
+      description: 'The bustling capital of Japan, blending ultramodern neon skyscrapers with historic temples and world-class gastronomy.',
+      imageUrl: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80',
     },
   });
 
-  const rome = await prisma.city.create({
+  const dubai = await prisma.city.create({
     data: {
-      name: 'Rome',
-      country: 'Italy',
-      description: 'The Eternal City packed with nearly 3,000 years of globally influential art, architecture, and ruins like the Colosseum.',
-      imageUrl: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80',
+      name: 'Dubai',
+      country: 'United Arab Emirates',
+      region: 'Middle East',
+      costIndex: 80,
+      popularityScore: 97,
+      description: 'Futuristic oasis of luxury shopping, ultramodern architecture, desert safaris, and the world-record Burj Khalifa tower.',
+      imageUrl: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80',
     },
   });
 
-  console.log('✅ Created cities: Tokyo, Kyoto, Osaka, Paris, London, Rome');
+  console.log('✅ Created cities: Goa, Jaipur, Varanasi, Manali, Munnar, Mumbai, Delhi & Agra, Paris, Tokyo, Dubai');
 
-  // 2. Create Activities for Tokyo
-  const tokyoActivities = [
+  // 2. Create Activities with Indian Rupee (₹) Pricing
+  const activitiesData = [
+    // Goa Activities
     {
-      name: 'Senso-ji Temple & Asakusa Old Town',
-      description: 'Tokyo’s oldest Buddhist temple founded in 645 AD. Walk down Nakamise Shopping Street lined with traditional snacks and crafts.',
-      category: 'CULTURE',
-      durationHours: 2.0,
-      estimatedCost: 0,
-      imageUrl: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Tokyo Tower Observation Deck',
-      description: 'Iconic communications and observation tower in the Shiba-koen district. Enjoy 360-degree panoramic views across Tokyo and Mt. Fuji on clear days.',
-      category: 'SIGHTSEEING',
-      durationHours: 2.0,
-      estimatedCost: 25,
-      imageUrl: 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?auto=format&fit=crop&w=800&q=80',
-      rating: 4.7,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Shibuya Crossing & Hachiko Statue',
-      description: 'Experience the world’s busiest pedestrian crossing with thousands of people crossing in all directions against dazzling billboard screens.',
-      category: 'SIGHTSEEING',
-      durationHours: 1.5,
-      estimatedCost: 0,
-      imageUrl: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=800&q=80',
-      rating: 4.6,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Authentic Sushi Making Masterclass',
-      description: 'Learn the craft of preparing Edo-style sushi with a licensed master chef in Tsukiji. Includes tasting multiple cuts of fresh fish.',
-      category: 'FOOD',
-      durationHours: 3.0,
-      estimatedCost: 85,
-      imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80',
-      rating: 4.9,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Meiji Shrine & Yoyogi Forest Walk',
-      description: 'Serene Shinto shrine dedicated to Emperor Meiji surrounded by 170 acres of evergreen forested tranquil parkland.',
-      category: 'CULTURE',
-      durationHours: 2.0,
-      estimatedCost: 0,
-      imageUrl: 'https://images.unsplash.com/photo-1583084332997-c8c368cbdb21?auto=format&fit=crop&w=800&q=80',
-      rating: 4.7,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'teamLab Planets Digital Art Museum',
-      description: 'An immersive digital art museum where you walk through water and a garden where you become one with the flowers and lights.',
+      cityId: goa.id,
+      name: 'Scuba Diving & Snorkeling at Grand Island',
+      description: 'Explore vibrant coral reefs, shipwrecks, and exotic marine life with PADI certified dive instructors and dolphin spotting boat ride.',
       category: 'ADVENTURE',
-      durationHours: 2.5,
-      estimatedCost: 38,
-      imageUrl: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=800&q=80',
+      durationHours: 5.0,
+      estimatedCost: 3500,
+      imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80',
       rating: 4.9,
-      cityId: tokyo.id,
     },
     {
-      name: 'Tsukiji Outer Market Food Tour',
-      description: 'Taste fresh sashimi, tamagoyaki, wagyu skewers, and fresh oysters guided by a local culinary enthusiast.',
-      category: 'FOOD',
-      durationHours: 3.0,
-      estimatedCost: 65,
-      imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Akihabara Electric Town & Retro Arcades',
-      description: 'Explore multi-story electronics department stores, retro video game sanctuaries, and anime collector shops.',
-      category: 'SHOPPING',
-      durationHours: 3.0,
-      estimatedCost: 20,
-      imageUrl: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
-      rating: 4.5,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Shinjuku Golden Gai Night Bar Crawl',
-      description: 'Venture into a network of 6 narrow alleys containing over 200 tiny thematic watering holes and whiskey lounges.',
-      category: 'NIGHTLIFE',
-      durationHours: 3.5,
-      estimatedCost: 55,
-      imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80',
-      rating: 4.7,
-      cityId: tokyo.id,
-    },
-    {
-      name: 'Shinjuku Gyoen National Garden',
-      description: 'One of Tokyo’s largest and most popular parks featuring traditional Japanese, English landscape, and French formal gardens.',
+      cityId: goa.id,
+      name: 'Dudhsagar Waterfalls 4x4 Jungle Safari',
+      description: 'Thrill ride across rivers into Bhagwan Mahavir Wildlife Sanctuary to witness India’s four-tiered 310m milky white waterfall.',
       category: 'NATURE',
+      durationHours: 6.0,
+      estimatedCost: 1800,
+      imageUrl: 'https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=800&q=80',
+      rating: 4.8,
+    },
+    {
+      cityId: goa.id,
+      name: 'Fort Aguada & Lighthouse Sunset Walk',
+      description: '17th-century Portuguese fortress commanding sweeping Arabian Sea panoramas with a historic freshwater reservoir.',
+      category: 'SIGHTSEEING',
       durationHours: 2.0,
-      estimatedCost: 5,
-      imageUrl: 'https://images.unsplash.com/photo-1528164344705-475426879c0d?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: tokyo.id,
-    },
-  ];
-
-  // 3. Create Activities for Kyoto
-  const kyotoActivities = [
-    {
-      name: 'Fushimi Inari-taisha Thousand Torii Gates',
-      description: 'Hike through thousands of vermilion torii gates winding up sacred Mount Inari with fox statues guarding the path.',
-      category: 'CULTURE',
-      durationHours: 3.0,
-      estimatedCost: 0,
-      imageUrl: 'https://images.unsplash.com/photo-1478436127897-769e00d7c583?auto=format&fit=crop&w=800&q=80',
-      rating: 4.9,
-      cityId: kyoto.id,
+      estimatedCost: 200,
+      imageUrl: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+      rating: 4.7,
     },
     {
-      name: 'Arashiyama Bamboo Grove & Monkey Park',
-      description: 'Stroll through towering bamboo stalks that rustle gently in the breeze and climb to the hilltop macaque sanctuary.',
-      category: 'NATURE',
+      cityId: goa.id,
+      name: 'Calangute & Baga Water Sports Combo',
+      description: 'Parasailing high over the coastline, jet ski rides, bumper boat, and banana boat rides on North Goa’s famous sands.',
+      category: 'ADVENTURE',
       durationHours: 3.0,
-      estimatedCost: 8,
+      estimatedCost: 2200,
       imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: kyoto.id,
+      rating: 4.6,
     },
     {
-      name: 'Kinkaku-ji (Golden Pavilion)',
-      description: 'Zen Buddhist temple whose top two floors are completely covered in brilliant gold leaf, overlooking a tranquil mirror pond.',
-      category: 'CULTURE',
-      durationHours: 1.5,
-      estimatedCost: 5,
-      imageUrl: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=800&q=80',
-      rating: 4.7,
-      cityId: kyoto.id,
-    },
-    {
-      name: 'Nishiki Market Culinary Discovery',
-      description: 'Known as "Kyoto\'s Kitchen", this narrow five-block shopping street features over a hundred stalls with skewers, pickles, and dashi.',
+      cityId: goa.id,
+      name: 'Traditional Goan Fish Curry Shack Dinner',
+      description: 'Savor spicy Kingfish Rava fry, prawn balchão, and fresh poee bread by candlelight directly on the beachfront.',
       category: 'FOOD',
-      durationHours: 2.0,
-      estimatedCost: 40,
-      imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: kyoto.id,
-    },
-    {
-      name: 'Traditional Machiya Tea Ceremony',
-      description: 'Experience the mindful art of Japanese green tea preparation (Chado) hosted by a kimono-clad tea master in a historic townhome.',
-      category: 'CULTURE',
-      durationHours: 1.5,
-      estimatedCost: 45,
-      imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80',
+      durationHours: 2.5,
+      estimatedCost: 750,
+      imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
       rating: 4.9,
-      cityId: kyoto.id,
     },
     {
-      name: 'Gion Historic Lantern Walking Tour',
-      description: 'Atmospheric evening walk through preservation quarters, wooden machiya houses, and lantern-lit stone alleys.',
+      cityId: goa.id,
+      name: 'Sahakari Spice Plantation Guided Tour & Buffet',
+      description: 'Walk through organic vanilla, cardamom, and black pepper groves with traditional welcome garland, cashew feni, and lunch.',
       category: 'CULTURE',
-      durationHours: 2.0,
-      estimatedCost: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1528164344705-475426879c0d?auto=format&fit=crop&w=800&q=80',
+      durationHours: 3.0,
+      estimatedCost: 800,
+      imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80',
       rating: 4.7,
-      cityId: kyoto.id,
     },
-    {
-      name: 'Kiyomizu-dera Cliffside Temple',
-      description: 'Ancient wooden temple built on the slopes of Mount Otowa with a vast veranda offering sweeping vistas over Kyoto.',
-      category: 'CULTURE',
-      durationHours: 2.0,
-      estimatedCost: 4,
-      imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: kyoto.id,
-    },
-  ];
 
-  // 4. Create Activities for Osaka
-  const osakaActivities = [
+    // Jaipur Activities
     {
-      name: 'Osaka Castle & Surrounding Park',
-      description: 'Magnificent five-story castle fortress reconstructed with museum displays, stone ramparts, and panoramic observation deck.',
+      cityId: jaipur.id,
+      name: 'Amber Fort & Palace Heritage Tour',
+      description: 'Majestic 16th-century hilltop fortress with Sheesh Mahal (Mirror Palace), courtyards, and panoramic views of Maota Lake.',
+      category: 'CULTURE',
+      durationHours: 3.5,
+      estimatedCost: 500,
+      imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80',
+      rating: 4.9,
+    },
+    {
+      cityId: jaipur.id,
+      name: 'Hawa Mahal & City Palace Royal Museum',
+      description: 'The 953-window honeycomb façade designed for royal women to observe street life, plus royal armory and textile galleries.',
+      category: 'SIGHTSEEING',
+      durationHours: 3.0,
+      estimatedCost: 400,
+      imageUrl: 'https://images.unsplash.com/photo-1603288967396-03f395786f5c?auto=format&fit=crop&w=800&q=80',
+      rating: 4.8,
+    },
+    {
+      cityId: jaipur.id,
+      name: 'Nahargarh Fort Sunset & City Skyline',
+      description: 'Watch the sun dip below the Aravalli hills, casting a golden glow over the entire Pink City skyline from Padao cafe.',
       category: 'SIGHTSEEING',
       durationHours: 2.5,
-      estimatedCost: 6,
-      imageUrl: 'https://images.unsplash.com/photo-1590559899731-a3f07b743759?auto=format&fit=crop&w=800&q=80',
-      rating: 4.6,
-      cityId: osaka.id,
+      estimatedCost: 300,
+      imageUrl: 'https://images.unsplash.com/photo-1609137144822-2591e13e2f5b?auto=format&fit=crop&w=800&q=80',
+      rating: 4.9,
     },
     {
-      name: 'Dotonbori Street Food & Canal Cruise',
-      description: 'Marvel at gigantic Glico Running Man and moving mechanical crab signs while feasting on hot takoyaki and okonomiyaki.',
+      cityId: jaipur.id,
+      name: 'Chokhi Dhani Cultural Village & Grand Thali',
+      description: 'Immersive Rajasthani fair with folk dancers, puppet shows, camel rides, pottery, fire stunts, and a lavish Dal Baati Churma feast.',
+      category: 'CULTURE',
+      durationHours: 4.0,
+      estimatedCost: 1400,
+      imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
+      rating: 4.8,
+    },
+    {
+      cityId: jaipur.id,
+      name: 'Johari & Bapu Bazaar Craft & Sweet Trail',
+      description: 'Shop authentic handcrafted silver jewelry, block-printed quilts, bandhani dupattas, and taste hot Ghewar sweets.',
+      category: 'SHOPPING',
+      durationHours: 2.5,
+      estimatedCost: 600,
+      imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+      rating: 4.7,
+    },
+
+    // Varanasi Activities
+    {
+      cityId: varanasi.id,
+      name: 'Dashashwamedh Ghat Grand Evening Ganga Aarti',
+      description: 'Experience the mesmerizing synchronized brass lamp rituals, conch shells, and Vedic chants from a private wooden river boat.',
+      category: 'CULTURE',
+      durationHours: 2.0,
+      estimatedCost: 500,
+      imageUrl: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80',
+      rating: 5.0,
+    },
+    {
+      cityId: varanasi.id,
+      name: 'Subah-e-Banaras Sunrise Boat Ride',
+      description: 'Row past 84 historical ghats in misty dawn light as pilgrims bathe and yogis practice morning surya namaskar.',
+      category: 'SIGHTSEEING',
+      durationHours: 2.5,
+      estimatedCost: 650,
+      imageUrl: 'https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=800&q=80',
+      rating: 4.9,
+    },
+    {
+      cityId: varanasi.id,
+      name: 'Kashi Vishwanath Temple Corridor Darshan',
+      description: 'Visit one of the 12 sacred Jyotirlingas, newly renovated with a sprawling riverfront corridor connecting to the Ganges.',
+      category: 'CULTURE',
+      durationHours: 2.0,
+      estimatedCost: 0,
+      imageUrl: 'https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=800&q=80',
+      rating: 4.9,
+    },
+    {
+      cityId: varanasi.id,
+      name: 'Banarasi Silk Weavers & Street Food Safari',
+      description: 'Witness master artisans weave intricate golden Zari sarees, paired with Banarasi kachori-jalebi and creamy Blue Lassi.',
       category: 'FOOD',
       durationHours: 3.0,
-      estimatedCost: 35,
-      imageUrl: 'https://images.unsplash.com/photo-1533050487297-09b450131914?auto=format&fit=crop&w=800&q=80',
+      estimatedCost: 450,
+      imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
       rating: 4.8,
-      cityId: osaka.id,
     },
+
+    // Manali Activities
     {
-      name: 'Universal Studios Japan & Super Nintendo World',
-      description: 'World-class theme park featuring immersive Mario Kart rides, Wizarding World of Harry Potter, and thrilling roller coasters.',
+      cityId: manali.id,
+      name: 'Rohtang Pass & Snow Glacier Expedition',
+      description: 'Ascend to 3,978 meters for breathtaking Himalayan views, snow scooter rides, skiing, and pristine mountain air.',
       category: 'ADVENTURE',
       durationHours: 7.0,
-      estimatedCost: 80,
-      imageUrl: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: osaka.id,
-    },
-    {
-      name: 'Kuromon Ichiba Seafood Market',
-      description: 'Historic fresh food market affectionately called Osaka’s Dining Table, featuring grilled sea urchin, giant king crab, and Kobe beef.',
-      category: 'FOOD',
-      durationHours: 2.0,
-      estimatedCost: 45,
-      imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-      rating: 4.7,
-      cityId: osaka.id,
-    },
-    {
-      name: 'Umeda Sky Building Floating Garden Observatory',
-      description: 'Spectacular twin towers connected by an open-air circular sky bridge 173 meters above the city skyline.',
-      category: 'SIGHTSEEING',
-      durationHours: 1.5,
-      estimatedCost: 15,
-      imageUrl: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80',
-      rating: 4.6,
-      cityId: osaka.id,
-    },
-  ];
-
-  // 5. Create Activities for Paris
-  const parisActivities = [
-    {
-      name: 'Eiffel Tower Summit Access & Champagne',
-      description: 'Ascend Gustave Eiffel’s iron masterpiece to the highest observation platform in the European Union for breathless vistas.',
-      category: 'SIGHTSEEING',
-      durationHours: 2.5,
-      estimatedCost: 32,
-      imageUrl: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: paris.id,
-    },
-    {
-      name: 'Louvre Museum Masterpieces Tour',
-      description: 'Explore the world’s largest art museum, home to the Mona Lisa, Venus de Milo, and the Winged Victory of Samothrace.',
-      category: 'CULTURE',
-      durationHours: 3.5,
-      estimatedCost: 22,
-      imageUrl: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80',
+      estimatedCost: 3200,
+      imageUrl: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
       rating: 4.9,
-      cityId: paris.id,
     },
     {
-      name: 'Seine River Sunset Cruise with Wine',
-      description: 'Glide past the historic bridges of Paris, Notre-Dame Cathedral, and the illuminated Musée d\'Orsay.',
-      category: 'SIGHTSEEING',
-      durationHours: 1.5,
-      estimatedCost: 20,
-      imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',
-      rating: 4.7,
-      cityId: paris.id,
-    },
-    {
-      name: 'Montmartre & Sacré-Cœur Artist Quarter Walk',
-      description: 'Wander cobblestone lanes once walked by Picasso and Van Gogh, leading to the dazzling white dome of Sacré-Cœur.',
-      category: 'CULTURE',
-      durationHours: 2.5,
-      estimatedCost: 0,
-      imageUrl: 'https://images.unsplash.com/photo-1509299349698-dd22323b5963?auto=format&fit=crop&w=800&q=80',
-      rating: 4.8,
-      cityId: paris.id,
-    },
-    {
-      name: 'French Macaron & Croissant Baking Class',
-      description: 'Hands-on pastry masterclass with an artisan French chef in a cozy Parisian atelier kitchen.',
-      category: 'FOOD',
+      cityId: manali.id,
+      name: 'Solang Valley Paragliding High-Flight',
+      description: 'Soar like an eagle with tandem pilots over alpine cedar forests and river streams with stunning mountain backdrops.',
+      category: 'ADVENTURE',
       durationHours: 3.0,
-      estimatedCost: 95,
-      imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80',
-      rating: 4.9,
-      cityId: paris.id,
+      estimatedCost: 3500,
+      imageUrl: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80',
+      rating: 4.8,
     },
     {
-      name: 'Palace of Versailles Hall of Mirrors Day Trip',
-      description: 'Opulent royal residence of King Louis XIV with gold-leaf rooms, monumental fountain gardens, and Marie Antoinette’s estate.',
-      category: 'CULTURE',
-      durationHours: 5.0,
-      estimatedCost: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?auto=format&fit=crop&w=800&q=80',
+      cityId: manali.id,
+      name: 'Hadimba Devi Pagoda Temple in Cedar Woods',
+      description: 'Carved 16th-century wooden temple dedicated to Hadimba in the midst of towering centuries-old Dhungri pine forest.',
+      category: 'NATURE',
+      durationHours: 1.5,
+      estimatedCost: 100,
+      imageUrl: 'https://images.unsplash.com/photo-1596761068534-4679753770ef?auto=format&fit=crop&w=800&q=80',
+      rating: 4.7,
+    },
+    {
+      cityId: manali.id,
+      name: 'Old Manali Riverside Cafe Hopping & Trout Meal',
+      description: 'Chilled out cafes overlooking the Manalsu river with live acoustic music, wood-fired pizza, and fresh Himalayan river trout.',
+      category: 'NIGHTLIFE',
+      durationHours: 3.0,
+      estimatedCost: 950,
+      imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80',
       rating: 4.8,
-      cityId: paris.id,
+    },
+
+    // Munnar & Kerala Activities
+    {
+      cityId: munnar.id,
+      name: 'Kolukkumalai Sunrise 4x4 Tea Estate Safari',
+      description: 'Ride to the world’s highest organic tea plantation (7,900 ft) to witness an awe-inspiring cloudbed sunrise.',
+      category: 'NATURE',
+      durationHours: 5.0,
+      estimatedCost: 2400,
+      imageUrl: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80',
+      rating: 5.0,
+    },
+    {
+      cityId: munnar.id,
+      name: 'Alleppey Backwaters Private Houseboat Cruise',
+      description: 'Glide through tranquil canals and paddy fields while onboard chefs serve traditional Kerala banana leaf Sadhya meals.',
+      category: 'NATURE',
+      durationHours: 5.5,
+      estimatedCost: 4500,
+      imageUrl: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
+      rating: 4.9,
+    },
+    {
+      cityId: munnar.id,
+      name: 'Kathakali & Kalaripayattu Live Cultural Night',
+      description: 'Marvel at elaborate classical face-painting makeup, facial expressions, and ancient sword-and-shield martial arts.',
+      category: 'CULTURE',
+      durationHours: 2.0,
+      estimatedCost: 600,
+      imageUrl: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+      rating: 4.8,
+    },
+
+    // Delhi & Agra Activities
+    {
+      cityId: delhi.id,
+      name: 'Taj Mahal Sunrise Guided Monument Tour',
+      description: 'Be the first through the gates as dawn turns the white marble monument of love into soft shades of amber and rose.',
+      category: 'SIGHTSEEING',
+      durationHours: 3.0,
+      estimatedCost: 350,
+      imageUrl: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80',
+      rating: 5.0,
+    },
+    {
+      cityId: delhi.id,
+      name: 'Agra Fort Red Sandstone Royal Citadel',
+      description: 'Vast Mughal fortress with Jahangir Palace, Khas Mahal, and views across the Yamuna river to the Taj Mahal.',
+      category: 'CULTURE',
+      durationHours: 2.5,
+      estimatedCost: 200,
+      imageUrl: 'https://images.unsplash.com/photo-1585136917228-56e6d1c810fb?auto=format&fit=crop&w=800&q=80',
+      rating: 4.8,
+    },
+    {
+      cityId: delhi.id,
+      name: 'Chandni Chowk Food Walk & Cycle Rickshaw Safari',
+      description: 'Taste legendary Paranthe Wali Gali paranthas, crispy jalebis, butter chicken, and spices in Old Delhi’s 300-year-old lanes.',
+      category: 'FOOD',
+      durationHours: 3.5,
+      estimatedCost: 750,
+      imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
+      rating: 4.9,
     },
   ];
 
-  // Insert all activities
-  const allActivities = [
-    ...tokyoActivities,
-    ...kyotoActivities,
-    ...osakaActivities,
-    ...parisActivities,
-  ];
-
-  for (const act of allActivities) {
+  for (const act of activitiesData) {
     await prisma.activity.create({ data: act });
   }
 
-  console.log(`✅ Seeded ${allActivities.length} activities.`);
+  console.log(`✅ Seeded ${activitiesData.length} Indian activities with INR pricing.`);
 
-  // 6. Create Default Sample Trip for testing Member 3 Flow
-  // "Japan Highlights: Tokyo & Kyoto" (Oct 12 to Oct 18)
-  const sampleTrip = await prisma.trip.create({
+  // 3. Create Sample Trips in Rupees (₹)
+  // Trip A: Goa Beach & Adventure Vacation (5 Days, ₹28,000)
+  const goaTrip = await prisma.trip.create({
     data: {
       userId: demoUser.id,
-      title: 'Japan Autumn Highlights: Tokyo & Kyoto',
-      description: 'A 7-day culinary and cultural adventure across Tokyo and Kyoto with temples, sushi classes, and bamboo forests.',
-      startDate: '2026-10-12',
-      endDate: '2026-10-18',
-      budget: 3500,
-      coverImage: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80',
+      title: 'Goa Beach & Coastal Adventure',
+      description: 'Tropical getaway featuring Arabian sea scuba diving, Dudhsagar waterfall trek, Portuguese forts, beach shacks, and seafood.',
+      startDate: '2026-10-10',
+      endDate: '2026-10-15',
+      budget: 28000,
+      coverImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
       isPublic: true,
-      shareToken: 'japan-autumn-2026',
+      shareToken: 'goa-vacation-2026',
     },
   });
 
-  // Create Stops for Trip
-  const tokyoStop = await prisma.tripStop.create({
+  const goaStop = await prisma.tripStop.create({
     data: {
-      tripId: sampleTrip.id,
-      cityId: tokyo.id,
-      arrivalDate: '2026-10-12',
+      tripId: goaTrip.id,
+      cityId: goa.id,
+      arrivalDate: '2026-10-10',
       departureDate: '2026-10-15',
       stopOrder: 1,
     },
   });
 
-  const kyotoStop = await prisma.tripStop.create({
-    data: {
-      tripId: sampleTrip.id,
-      cityId: kyoto.id,
-      arrivalDate: '2026-10-16',
-      departureDate: '2026-10-18',
-      stopOrder: 2,
-    },
-  });
-
-  // Query back created activities to get IDs
-  const sensoji = await prisma.activity.findFirst({ where: { name: { contains: 'Senso-ji' } } });
-  const tokyoTower = await prisma.activity.findFirst({ where: { name: { contains: 'Tokyo Tower' } } });
-  const sushi = await prisma.activity.findFirst({ where: { name: { contains: 'Sushi Making' } } });
-  const shibuya = await prisma.activity.findFirst({ where: { name: { contains: 'Shibuya Crossing' } } });
-  const teamlab = await prisma.activity.findFirst({ where: { name: { contains: 'teamLab' } } });
-  const fushimi = await prisma.activity.findFirst({ where: { name: { contains: 'Fushimi Inari' } } });
-  const bamboo = await prisma.activity.findFirst({ where: { name: { contains: 'Arashiyama' } } });
-
-  // Seed sample itinerary items matching the prompt requirement
-  if (sensoji && tokyoTower && sushi && shibuya && teamlab && fushimi && bamboo) {
-    // Day 1: Oct 12 (Tokyo)
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: tokyoStop.id,
-        activityId: sensoji.id,
-        date: '2026-10-12',
-        startTime: '09:00',
-        endTime: '11:00',
-        notes: 'Arrive early to avoid crowds. Try the ningyo-yaki doll cakes on Nakamise Street!',
-        customCost: 0,
-        sortOrder: 1,
-      },
-    });
-
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: tokyoStop.id,
-        activityId: tokyoTower.id,
-        date: '2026-10-12',
-        startTime: '14:00',
-        endTime: '16:00',
-        notes: 'Book Main Deck tickets online for quick elevator entry.',
-        customCost: 25,
-        sortOrder: 2,
-      },
-    });
-
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: tokyoStop.id,
-        activityId: sushi.id,
-        date: '2026-10-12',
-        startTime: '19:00',
-        endTime: '22:00',
-        notes: 'Wear comfortable casual clothes. Includes omakase dining with sake pairing.',
-        customCost: 85,
-        sortOrder: 3,
-      },
-    });
-
-    // Day 2: Oct 13 (Tokyo)
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: tokyoStop.id,
-        activityId: shibuya.id,
-        date: '2026-10-13',
-        startTime: '10:00',
-        endTime: '11:30',
-        notes: 'Check out the view from Shibuya Sky or Starbucks Tsutaya overlooking crossing.',
-        customCost: 0,
-        sortOrder: 1,
-      },
-    });
-
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: tokyoStop.id,
-        activityId: teamlab.id,
-        date: '2026-10-13',
-        startTime: '15:00',
-        endTime: '17:30',
-        notes: 'Need to remove shoes & roll up pants for knee-deep water installations.',
-        customCost: 38,
-        sortOrder: 2,
-      },
-    });
-
-    // Day 5: Oct 16 (Kyoto)
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: kyotoStop.id,
-        activityId: fushimi.id,
-        date: '2026-10-16',
-        startTime: '08:30',
-        endTime: '11:30',
-        notes: 'Early morning hike to the Yotsutsuji intersection for views over southern Kyoto.',
-        customCost: 0,
-        sortOrder: 1,
-      },
-    });
-
-    // Day 6: Oct 17 (Kyoto)
-    await prisma.itineraryItem.create({
-      data: {
-        tripId: sampleTrip.id,
-        tripStopId: kyotoStop.id,
-        activityId: bamboo.id,
-        date: '2026-10-17',
-        startTime: '09:00',
-        endTime: '12:00',
-        notes: 'Walk through the grove then visit Tenryu-ji Zen garden right next door.',
-        customCost: 8,
-        sortOrder: 1,
-      },
-    });
-  }
-
-  // Also create a second trip: "Parisian Elegance" (Nov 05 - Nov 09)
-  const parisTrip = await prisma.trip.create({
+  // Trip B: Golden Triangle Heritage Odyssey (7 Days, ₹45,000)
+  const triangleTrip = await prisma.trip.create({
     data: {
       userId: demoUser.id,
-      title: 'Romantic Autumn in Paris',
-      description: 'Museums, monuments, pastry classes and sunset cruises along the Seine.',
+      title: 'Golden Triangle Heritage Odyssey',
+      description: 'Classic North India tour covering Delhi monuments, the sunrise Taj Mahal in Agra, and royal Amber Fort in Jaipur.',
       startDate: '2026-11-05',
-      endDate: '2026-11-09',
-      budget: 2800,
-      coverImage: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80',
+      endDate: '2026-11-12',
+      budget: 45000,
+      coverImage: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
       isPublic: true,
-      shareToken: 'paris-autumn-2026',
+      shareToken: 'golden-triangle-2026',
     },
   });
 
-  const parisStop = await prisma.tripStop.create({
+  const delhiStop = await prisma.tripStop.create({
     data: {
-      tripId: parisTrip.id,
-      cityId: paris.id,
+      tripId: triangleTrip.id,
+      cityId: delhi.id,
       arrivalDate: '2026-11-05',
-      departureDate: '2026-11-09',
+      departureDate: '2026-11-08',
       stopOrder: 1,
     },
   });
 
-  const eiffel = await prisma.activity.findFirst({ where: { name: { contains: 'Eiffel Tower' } } });
-  const louvre = await prisma.activity.findFirst({ where: { name: { contains: 'Louvre' } } });
+  const jaipurStop = await prisma.tripStop.create({
+    data: {
+      tripId: triangleTrip.id,
+      cityId: jaipur.id,
+      arrivalDate: '2026-11-08',
+      departureDate: '2026-11-12',
+      stopOrder: 2,
+    },
+  });
 
-  if (eiffel && louvre) {
+  // Trip C: Kerala Backwaters & Tea Gardens (6 Days, ₹35,000)
+  const keralaTrip = await prisma.trip.create({
+    data: {
+      userId: demoUser.id,
+      title: 'Kerala Backwaters & Tea Trails',
+      description: 'Refreshing retreat among misty Munnar tea plantations, spice gardens, and tranquil Alleppey houseboat canals.',
+      startDate: '2026-12-01',
+      endDate: '2026-12-07',
+      budget: 35000,
+      coverImage: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80',
+      isPublic: true,
+      shareToken: 'kerala-tea-trails-2026',
+    },
+  });
+
+  await prisma.tripStop.create({
+    data: {
+      tripId: keralaTrip.id,
+      cityId: munnar.id,
+      arrivalDate: '2026-12-01',
+      departureDate: '2026-12-07',
+      stopOrder: 1,
+    },
+  });
+
+  // 4. Seed Itinerary Items for Goa Trip
+  const scubaAct = await prisma.activity.findFirst({ where: { name: { contains: 'Scuba' } } });
+  const dudhsagarAct = await prisma.activity.findFirst({ where: { name: { contains: 'Dudhsagar' } } });
+  const fortAct = await prisma.activity.findFirst({ where: { name: { contains: 'Fort Aguada' } } });
+  const shackAct = await prisma.activity.findFirst({ where: { name: { contains: 'Shack' } } });
+
+  if (scubaAct && dudhsagarAct && fortAct && shackAct) {
     await prisma.itineraryItem.create({
       data: {
-        tripId: parisTrip.id,
-        tripStopId: parisStop.id,
-        activityId: louvre.id,
-        date: '2026-11-06',
-        startTime: '10:00',
-        endTime: '13:30',
-        notes: 'Enter via Carrousel du Louvre to skip the main pyramid queue.',
-        customCost: 22,
+        tripId: goaTrip.id,
+        tripStopId: goaStop.id,
+        activityId: fortAct.id,
+        date: '2026-10-10',
+        startTime: '16:00',
+        endTime: '18:30',
+        notes: 'Catch the lighthouse sunset and take photos of Portuguese ramparts.',
+        customCost: 200,
         sortOrder: 1,
       },
     });
 
     await prisma.itineraryItem.create({
       data: {
-        tripId: parisTrip.id,
-        tripStopId: parisStop.id,
-        activityId: eiffel.id,
+        tripId: goaTrip.id,
+        tripStopId: goaStop.id,
+        activityId: scubaAct.id,
+        date: '2026-10-11',
+        startTime: '08:30',
+        endTime: '13:30',
+        notes: 'Wear quick-dry swimwear. Underwater GOPRO photography included.',
+        customCost: 3500,
+        sortOrder: 1,
+      },
+    });
+
+    await prisma.itineraryItem.create({
+      data: {
+        tripId: goaTrip.id,
+        tripStopId: goaStop.id,
+        activityId: shackAct.id,
+        date: '2026-10-11',
+        startTime: '19:30',
+        endTime: '22:00',
+        notes: 'Candlelight seafood dinner at Britto’s / Curlies shack.',
+        customCost: 750,
+        sortOrder: 2,
+      },
+    });
+
+    await prisma.itineraryItem.create({
+      data: {
+        tripId: goaTrip.id,
+        tripStopId: goaStop.id,
+        activityId: dudhsagarAct.id,
+        date: '2026-10-12',
+        startTime: '07:00',
+        endTime: '14:00',
+        notes: '4x4 open jeep safari through Mollem National park river crossings.',
+        customCost: 1800,
+        sortOrder: 1,
+      },
+    });
+  }
+
+  // 5. Seed Itinerary Items for Golden Triangle
+  const tajAct = await prisma.activity.findFirst({ where: { name: { contains: 'Taj Mahal' } } });
+  const delhiFoodAct = await prisma.activity.findFirst({ where: { name: { contains: 'Chandni Chowk' } } });
+  const amberAct = await prisma.activity.findFirst({ where: { name: { contains: 'Amber Fort' } } });
+  const chokhiAct = await prisma.activity.findFirst({ where: { name: { contains: 'Chokhi Dhani' } } });
+
+  if (tajAct && delhiFoodAct && amberAct && chokhiAct) {
+    await prisma.itineraryItem.create({
+      data: {
+        tripId: triangleTrip.id,
+        tripStopId: delhiStop.id,
+        activityId: delhiFoodAct.id,
+        date: '2026-11-05',
+        startTime: '15:00',
+        endTime: '18:30',
+        notes: 'Paranthe Wali Gali, Natraj Dahi Bhalla, and spice market walk.',
+        customCost: 750,
+        sortOrder: 1,
+      },
+    });
+
+    await prisma.itineraryItem.create({
+      data: {
+        tripId: triangleTrip.id,
+        tripStopId: delhiStop.id,
+        activityId: tajAct.id,
         date: '2026-11-06',
-        startTime: '18:00',
-        endTime: '20:30',
-        notes: 'Watch the hourly sparkle light show at sunset from the top floor.',
-        customCost: 32,
+        startTime: '06:00',
+        endTime: '09:30',
+        notes: 'Sunrise ticket. Reach East gate by 05:45 AM.',
+        customCost: 350,
+        sortOrder: 1,
+      },
+    });
+
+    await prisma.itineraryItem.create({
+      data: {
+        tripId: triangleTrip.id,
+        tripStopId: jaipurStop.id,
+        activityId: amberAct.id,
+        date: '2026-11-09',
+        startTime: '09:00',
+        endTime: '12:30',
+        notes: 'Explore the Sheesh Mahal and grand courtyards.',
+        customCost: 500,
+        sortOrder: 1,
+      },
+    });
+
+    await prisma.itineraryItem.create({
+      data: {
+        tripId: triangleTrip.id,
+        tripStopId: jaipurStop.id,
+        activityId: chokhiAct.id,
+        date: '2026-11-09',
+        startTime: '18:30',
+        endTime: '22:30',
+        notes: 'Full cultural evening with folk music, dance, and royal thali.',
+        customCost: 1400,
         sortOrder: 2,
       },
     });
   }
 
-  // 4. Seed Expenses for Japan Highlights Trip
+  // 6. Seed Realistic Expenses in Rupees (₹) for Goa Trip
   await prisma.expense.createMany({
     data: [
       {
-        tripId: sampleTrip.id,
+        tripId: goaTrip.id,
         category: 'TRANSPORT',
-        description: 'Shinkansen Bullet Train (Tokyo -> Kyoto)',
-        amount: 140,
-        date: '2026-10-16',
+        description: 'Vande Bharat Train Tickets (Mumbai to Madgaon Return)',
+        amount: 3800,
+        date: '2026-10-10',
       },
       {
-        tripId: sampleTrip.id,
-        category: 'TRANSPORT',
-        description: 'Tokyo Metro 72-Hour Tourist Subway Pass',
-        amount: 15,
-        date: '2026-10-12',
-      },
-      {
-        tripId: sampleTrip.id,
+        tripId: goaTrip.id,
         category: 'STAY',
-        description: 'Hotel Gracery Shinjuku (4 Nights Tokyo)',
-        amount: 620,
-        date: '2026-10-12',
+        description: 'Boutique Beach Resort Booking (5 Nights in Calangute)',
+        amount: 14500,
+        date: '2026-10-10',
       },
       {
-        tripId: sampleTrip.id,
-        category: 'STAY',
-        description: 'Traditional Kyoto Machiya Townhouse (3 Nights)',
-        amount: 450,
-        date: '2026-10-16',
+        tripId: goaTrip.id,
+        category: 'ACTIVITY',
+        description: 'Scuba Diving & Dudhsagar Safari Entry Passes',
+        amount: 5300,
+        date: '2026-10-11',
       },
       {
-        tripId: sampleTrip.id,
+        tripId: goaTrip.id,
         category: 'MEAL',
-        description: 'Omakase Chef Tasting Dinner in Ginza',
-        amount: 180,
+        description: 'Beach Shack Dinners, Cocktails & Seafood Lunches',
+        amount: 4200,
+        date: '2026-10-12',
+      },
+      {
+        tripId: goaTrip.id,
+        category: 'MISCELLANEOUS',
+        description: 'Scooter Rental (5 Days) + Fuel + Souvenirs',
+        amount: 2200,
         date: '2026-10-13',
       },
-      {
-        tripId: sampleTrip.id,
-        category: 'MEAL',
-        description: 'Nishiki Market Street Food Tour Skewers',
-        amount: 45,
-        date: '2026-10-17',
-      },
-      {
-        tripId: sampleTrip.id,
-        category: 'MISCELLANEOUS',
-        description: 'Pocket WiFi 5G Rental (7 Days)',
-        amount: 35,
-        date: '2026-10-12',
-      },
-      {
-        tripId: sampleTrip.id,
-        category: 'MISCELLANEOUS',
-        description: 'Matcha Tea Sets & Gion Souvenirs',
-        amount: 65,
-        date: '2026-10-17',
-      },
     ],
   });
 
-  // 5. Seed Expenses for Paris Trip
-  await prisma.expense.createMany({
-    data: [
-      {
-        tripId: parisTrip.id,
-        category: 'TRANSPORT',
-        description: 'Eurostar Ticket London to Paris Gare du Nord',
-        amount: 185,
-        date: '2026-11-05',
-      },
-      {
-        tripId: parisTrip.id,
-        category: 'STAY',
-        description: 'Boutique Hotel Saint-Germain-des-Prés (4 Nights)',
-        amount: 780,
-        date: '2026-11-05',
-      },
-      {
-        tripId: parisTrip.id,
-        category: 'MEAL',
-        description: 'Romantic 3-Course Bistro Dinner with Wine',
-        amount: 110,
-        date: '2026-11-06',
-      },
-      {
-        tripId: parisTrip.id,
-        category: 'MISCELLANEOUS',
-        description: 'Paris Museum Pass 4-Day Access',
-        amount: 75,
-        date: '2026-11-05',
-      },
-    ],
-  });
-
-  // Seed Saved Destinations for demo user (Kyoto & Paris)
+  // 7. Seed Saved Destinations for Rahul (Goa, Jaipur, Munnar, Paris)
   await prisma.savedDestination.createMany({
     data: [
-      { userId: demoUser.id, cityId: kyoto.id },
+      { userId: demoUser.id, cityId: goa.id },
+      { userId: demoUser.id, cityId: jaipur.id },
+      { userId: demoUser.id, cityId: munnar.id },
       { userId: demoUser.id, cityId: paris.id },
     ],
   });
 
-  console.log('✅ Seeded sample trips, stops, saved destinations, and initial itinerary items successfully!');
+  console.log('✅ Seeded trips, stops, activities, expenses in ₹, and saved destinations successfully!');
 }
 
 main()
