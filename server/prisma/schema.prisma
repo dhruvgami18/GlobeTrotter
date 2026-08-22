@@ -1,0 +1,55 @@
+// server/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  // other user fields (e.g., email, password) can be added as needed
+  trips Trip[]
+}
+
+model Trip {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  budget      Float?
+  coverImage  String?
+  isPublic    Boolean    @default(false)
+  shareToken  String?    @unique
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  stops       TripStop[]
+  user        User       @relation(fields: [userId], references: [id])
+}
+
+model TripStop {
+  id            Int      @id @default(autoincrement())
+  tripId        Int
+  cityId        Int
+  arrivalDate   DateTime
+  departureDate DateTime
+  stopOrder     Int
+  trip          Trip     @relation(fields: [tripId], references: [id])
+  city          City     @relation(fields: [cityId], references: [id])
+}
+
+model City {
+  id               Int        @id @default(autoincrement())
+  name             String
+  country          String
+  region           String
+  description      String
+  imageUrl         String
+  costIndex        Float
+  popularityScore  Float
+  stops            TripStop[]
+}
