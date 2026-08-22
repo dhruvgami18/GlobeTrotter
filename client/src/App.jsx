@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
+import AdminRoute from './routes/AdminRoute';
 
 // Member 1 Pages
 import Login from './features/auth/pages/Login';
@@ -15,6 +16,12 @@ import Profile from './features/profile/pages/Profile';
 import ItineraryBuilder from './features/itinerary/pages/ItineraryBuilder';
 import CalendarView from './features/calendar/CalendarView';
 import ActivitySearch from './features/activities/pages/ActivitySearch';
+
+// Member 4 Pages
+import BudgetTracker from './features/budget/pages/BudgetTracker';
+import CommunityHub from './features/community/pages/CommunityHub';
+import PublicTripView from './features/community/pages/PublicTripView';
+import AdminDashboard from './features/admin/pages/AdminDashboard';
 
 function RootRedirect() {
   const { isAuthenticated, loading } = useAuth();
@@ -32,6 +39,16 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
+          {/* Public Trip View Route (Standalone or within layout) */}
+          <Route
+            path="/public/trips/:shareToken"
+            element={
+              <div className="min-h-screen bg-slate-50 text-slate-900 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                <PublicTripView />
+              </div>
+            }
+          />
+
           {/* Protected Main Layout Routes */}
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route path="/" element={<RootRedirect />} />
@@ -44,16 +61,17 @@ export default function App() {
             <Route path="/trips/:tripId" element={<ItineraryBuilder />} />
             <Route path="/activities" element={<ActivitySearch />} />
 
-            {/* Community Placeholder */}
+            {/* Member 4 Routes */}
+            <Route path="/trips/:tripId/budget" element={<BudgetTracker />} />
+            <Route path="/community" element={<CommunityHub />} />
+
+            {/* Admin Management Dashboard */}
             <Route
-              path="/community"
+              path="/admin"
               element={
-                <div className="p-8 text-center bg-white rounded-3xl border border-slate-200">
-                  <h2 className="text-xl font-bold text-slate-900">Community Hub</h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Discover public itineraries shared by the global traveler community.
-                  </p>
-                </div>
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
               }
             />
           </Route>
@@ -65,3 +83,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

@@ -23,6 +23,9 @@ export default function Sidebar({ isOpen, onClose }) {
     { name: 'My Trips', path: '/trips/1/itinerary', icon: Calendar },
     { name: 'Explore', path: '/activities', icon: MapPin },
     { name: 'Community', path: '/community', icon: Users },
+    ...(user?.role === 'ADMIN'
+      ? [{ name: 'Admin Dashboard', path: '/admin', icon: Sparkles }]
+      : []),
   ];
 
   return (

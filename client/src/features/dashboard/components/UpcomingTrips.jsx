@@ -116,14 +116,19 @@ export default function UpcomingTrips({
                       <span>{activitiesCount} Activities Scheduled</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <Link to={`/trips/${trip.id}/itinerary`}>
-                        <Button variant="primary" size="sm" className="text-xs">
-                          Open Itinerary
+                        <Button variant="primary" size="sm" className="text-xs px-2.5">
+                          Itinerary
+                        </Button>
+                      </Link>
+                      <Link to={`/trips/${trip.id}/budget`}>
+                        <Button variant="outline" size="sm" className="text-xs px-2.5 text-emerald-700 bg-emerald-50/60 border-emerald-200 hover:bg-emerald-100/60">
+                          Budget
                         </Button>
                       </Link>
                       <Link to={`/trips/${trip.id}/calendar`}>
-                        <Button variant="outline" size="sm" className="text-xs">
+                        <Button variant="outline" size="sm" className="text-xs px-2.5">
                           Calendar
                         </Button>
                       </Link>
