@@ -23,10 +23,12 @@ import {
   CheckCircle2,
   AlertCircle,
   LayoutGrid,
+  Share2,
 } from 'lucide-react';
 import StopSection from '../components/StopSection';
 import ActivitySearchModal from '../../activities/components/ActivitySearchModal';
 import ActivityModal from '../components/ActivityModal';
+import ShareTripModal from '../../community/components/ShareTripModal';
 import ConfirmDialog from '../../../components/ui/ConfirmDialog';
 import Button from '../../../components/ui/Button';
 import PageHeader from '../../../components/layout/PageHeader';
@@ -58,6 +60,7 @@ export default function ItineraryBuilder() {
 
   const [deletingItem, setDeletingItem] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // dnd-kit sensors
   const sensors = useSensors(
@@ -308,6 +311,15 @@ export default function ItineraryBuilder() {
                 {formatCurrency(summary.totalEstimatedCost)}
               </span>
             </div>
+
+            <Button
+              variant="outline"
+              onClick={() => setIsShareModalOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-bold py-3 px-3.5 rounded-2xl"
+            >
+              <Share2 className="w-3.5 h-3.5 text-brand-600" />
+              <span>{trip.isPublic ? 'Shared' : 'Share'}</span>
+            </Button>
           </div>
         </div>
 
@@ -333,13 +345,12 @@ export default function ItineraryBuilder() {
             >
               Overview
             </button>
-            <button
-              type="button"
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors"
-              title="Budget (Member 4)"
+            <Link
+              to={`/trips/${tripId}/budget`}
+              className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             >
-              Budget
-            </button>
+              Budget & Expenses
+            </Link>
           </div>
 
           {/* List vs Timeline View Toggle */}
@@ -445,6 +456,25 @@ export default function ItineraryBuilder() {
           title="Remove Activity?"
           message={`Are you sure you want to remove '${deletingItem.activity?.name}' from this day's itinerary?`}
           isLoading={isDeleting}
+        />
+      )}
+
+      {/* Share / Publish Trip Modal */}
+      {isShareModalOpen && (
+        <ShareTripModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          trip={trip}
+          onTripUpdated={(updated) => {
+            setData((prev) => ({
+              ...prev,
+              trip: {
+                ...prev.trip,
+                isPublic: updated.isPublic,
+                shareToken: updated.shareToken,
+              },
+            }));
+          }}
         />
       )}
     </div>

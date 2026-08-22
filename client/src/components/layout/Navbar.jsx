@@ -13,6 +13,7 @@ import {
   X,
   ChevronDown,
   Users,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -26,6 +27,7 @@ export default function Navbar({ onToggleSidebar }) {
     { name: 'Dashboard', path: '/dashboard', icon: Home },
     { name: 'My Trips', path: '/trips/1/itinerary', icon: Calendar },
     { name: 'Explore', path: '/activities', icon: MapPin },
+    { name: 'Community', path: '/community', icon: Users },
   ];
 
   const handleLogout = () => {
@@ -155,6 +157,16 @@ export default function Navbar({ onToggleSidebar }) {
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />
                           Japan Trip Demo
                         </Link>
+                        {user.role === 'ADMIN' && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-purple-700 bg-purple-50/50 hover:bg-purple-50 hover:text-purple-800"
+                          >
+                            <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
+                            Admin Console
+                          </Link>
+                        )}
                       </div>
 
                       <div className="pt-1 border-t border-slate-100">

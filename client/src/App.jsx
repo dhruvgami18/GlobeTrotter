@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
-import { Toaster } from 'react-hot-toast';
+import AdminRoute from './routes/AdminRoute';
 
 // Member 1 Pages
 import Login from './features/auth/pages/Login';
@@ -23,6 +24,12 @@ import CitySearch from './features/cities/pages/CitySearch';
 import ItineraryBuilder from './features/itinerary/pages/ItineraryBuilder';
 import CalendarView from './features/calendar/CalendarView';
 import ActivitySearch from './features/activities/pages/ActivitySearch';
+
+// Member 4 Pages
+import BudgetTracker from './features/budget/pages/BudgetTracker';
+import CommunityHub from './features/community/pages/CommunityHub';
+import PublicTripView from './features/community/pages/PublicTripView';
+import AdminDashboard from './features/admin/pages/AdminDashboard';
 
 function RootRedirect() {
   const { isAuthenticated, loading } = useAuth();
@@ -45,13 +52,22 @@ export default function App() {
           <Toaster />
 
           <Routes>
-
-            {/* Public Auth Routes */}
+            {/* Public auth routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Protected Main Layout Routes */}
+            {/* Public shared-trip route */}
+            <Route
+              path="/public/trips/:shareToken"
+              element={
+                <div className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 sm:px-6 sm:py-8 lg:px-8">
+                  <PublicTripView />
+                </div>
+              }
+            />
+
+            {/* Protected application routes */}
             <Route
               element={
                 <ProtectedRoute>
@@ -59,59 +75,49 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              {/* Root */}
               <Route path="/" element={<RootRedirect />} />
-
-              {/* Dashboard & Profile */}
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
 
-              {/* Member 2 - Trips */}
+              {/* Trips */}
               <Route path="/trips" element={<TripList />} />
               <Route path="/trips/create" element={<CreateTrip />} />
               <Route path="/trips/:tripId" element={<TripDetail />} />
               <Route path="/trips/:tripId/edit" element={<EditTrip />} />
 
-              {/* Member 2 - Cities */}
+              {/* Cities */}
               <Route path="/cities" element={<CitySearch />} />
 
-              {/* Member 3 - Travel Planning */}
+              {/* Travel planning */}
               <Route
                 path="/trips/:tripId/itinerary"
                 element={<ItineraryBuilder />}
               />
-
               <Route
                 path="/trips/:tripId/calendar"
                 element={<CalendarView />}
               />
+              <Route path="/activities" element={<ActivitySearch />} />
 
+              {/* Budget and community */}
               <Route
-                path="/activities"
-                element={<ActivitySearch />}
+                path="/trips/:tripId/budget"
+                element={<BudgetTracker />}
               />
+              <Route path="/community" element={<CommunityHub />} />
 
-              {/* Community */}
+              {/* Admin */}
               <Route
-                path="/community"
+                path="/admin"
                 element={
-                  <div className="p-8 text-center bg-white rounded-3xl border border-slate-200">
-                    <h2 className="text-xl font-bold text-slate-900">
-                      Community Hub
-                    </h2>
-
-                    <p className="text-xs text-slate-500 mt-1">
-                      Discover public itineraries shared by the global traveler
-                      community.
-                    </p>
-                  </div>
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
                 }
               />
             </Route>
 
-            {/* Catch-all fallback */}
             <Route path="*" element={<RootRedirect />} />
-
           </Routes>
         </div>
       </BrowserRouter>

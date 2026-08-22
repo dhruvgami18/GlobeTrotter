@@ -6,6 +6,7 @@ async function main() {
   console.log('🌱 Starting database seed for GlobeTrotter...');
 
   // Clean existing tables
+  await prisma.expense.deleteMany();
   await prisma.savedDestination.deleteMany();
   await prisma.itineraryItem.deleteMany();
   await prisma.tripStop.deleteMany();
@@ -619,6 +620,102 @@ async function main() {
       },
     });
   }
+
+  // 4. Seed Expenses for Japan Highlights Trip
+  await prisma.expense.createMany({
+    data: [
+      {
+        tripId: sampleTrip.id,
+        category: 'TRANSPORT',
+        description: 'Shinkansen Bullet Train (Tokyo -> Kyoto)',
+        amount: 140,
+        date: '2026-10-16',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'TRANSPORT',
+        description: 'Tokyo Metro 72-Hour Tourist Subway Pass',
+        amount: 15,
+        date: '2026-10-12',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'STAY',
+        description: 'Hotel Gracery Shinjuku (4 Nights Tokyo)',
+        amount: 620,
+        date: '2026-10-12',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'STAY',
+        description: 'Traditional Kyoto Machiya Townhouse (3 Nights)',
+        amount: 450,
+        date: '2026-10-16',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'MEAL',
+        description: 'Omakase Chef Tasting Dinner in Ginza',
+        amount: 180,
+        date: '2026-10-13',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'MEAL',
+        description: 'Nishiki Market Street Food Tour Skewers',
+        amount: 45,
+        date: '2026-10-17',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'MISCELLANEOUS',
+        description: 'Pocket WiFi 5G Rental (7 Days)',
+        amount: 35,
+        date: '2026-10-12',
+      },
+      {
+        tripId: sampleTrip.id,
+        category: 'MISCELLANEOUS',
+        description: 'Matcha Tea Sets & Gion Souvenirs',
+        amount: 65,
+        date: '2026-10-17',
+      },
+    ],
+  });
+
+  // 5. Seed Expenses for Paris Trip
+  await prisma.expense.createMany({
+    data: [
+      {
+        tripId: parisTrip.id,
+        category: 'TRANSPORT',
+        description: 'Eurostar Ticket London to Paris Gare du Nord',
+        amount: 185,
+        date: '2026-11-05',
+      },
+      {
+        tripId: parisTrip.id,
+        category: 'STAY',
+        description: 'Boutique Hotel Saint-Germain-des-Prés (4 Nights)',
+        amount: 780,
+        date: '2026-11-05',
+      },
+      {
+        tripId: parisTrip.id,
+        category: 'MEAL',
+        description: 'Romantic 3-Course Bistro Dinner with Wine',
+        amount: 110,
+        date: '2026-11-06',
+      },
+      {
+        tripId: parisTrip.id,
+        category: 'MISCELLANEOUS',
+        description: 'Paris Museum Pass 4-Day Access',
+        amount: 75,
+        date: '2026-11-05',
+      },
+    ],
+  });
 
   // Seed Saved Destinations for demo user (Kyoto & Paris)
   await prisma.savedDestination.createMany({
