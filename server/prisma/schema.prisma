@@ -19,10 +19,10 @@ model User {
   bio               String?
   avatarUrl         String?
   language          String             @default("English")
-  role              String             @default("USER") // USER, ADMIN
+  role              String             @default("USER")
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
-  
+
   trips             Trip[]
   savedDestinations SavedDestination[]
 }
@@ -43,9 +43,13 @@ model City {
   id                Int                @id @default(autoincrement())
   name              String
   country           String
+  region            String
   description       String?
   imageUrl          String?
+  costIndex         Float              @default(0)
+  popularityScore   Float              @default(0)
   createdAt         DateTime           @default(now())
+
   activities        Activity[]
   tripStops         TripStop[]
   savedDestinations SavedDestination[]
@@ -56,7 +60,7 @@ model Activity {
   cityId         Int
   name           String
   description    String
-  category       String // SIGHTSEEING, FOOD, CULTURE, ADVENTURE, SHOPPING, NIGHTLIFE, NATURE
+  category       String
   durationHours  Float
   estimatedCost  Float
   imageUrl       String
@@ -92,8 +96,8 @@ model TripStop {
   id             Int             @id @default(autoincrement())
   tripId         Int
   cityId         Int
-  arrivalDate    String // YYYY-MM-DD
-  departureDate  String // YYYY-MM-DD
+  arrivalDate    String
+  departureDate  String
   stopOrder      Int             @default(0)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -108,9 +112,9 @@ model ItineraryItem {
   tripId      Int
   tripStopId  Int
   activityId  Int
-  date        String // YYYY-MM-DD
-  startTime   String // HH:mm
-  endTime     String // HH:mm
+  date        String
+  startTime   String
+  endTime     String
   notes       String?
   customCost  Float?
   sortOrder   Int      @default(0)
@@ -125,10 +129,10 @@ model ItineraryItem {
 model Expense {
   id          Int      @id @default(autoincrement())
   tripId      Int
-  category    String // TRANSPORT, STAY, ACTIVITY, MEAL, MISCELLANEOUS
+  category    String
   description String
   amount      Float
-  date        String // YYYY-MM-DD
+  date        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
