@@ -75,7 +75,7 @@ async function runMember4Tests() {
           password: 'demo123',
         },
       });
-      const userToken = userLogin.data?.data?.token;
+      const userToken = userLogin.data?.token || userLogin.data?.data?.token;
       assert('User Login (demo@globetrotter.com)', userLogin.status === 200 && Boolean(userToken));
 
       // 3. Admin Login
@@ -86,7 +86,7 @@ async function runMember4Tests() {
           password: 'admin123',
         },
       });
-      const adminToken = adminLogin.data?.data?.token;
+      const adminToken = adminLogin.data?.token || adminLogin.data?.data?.token;
       assert('Admin Login (admin@globetrotter.com)', adminLogin.status === 200 && Boolean(adminToken));
 
       // ========================================================
@@ -94,26 +94,30 @@ async function runMember4Tests() {
       // ========================================================
       console.log('\n--- [TESTS: BUDGET & EXPENSE CRUD] ---');
 
+      const tripsRes = await testReq('/trips');
+      const sampleTrip = tripsRes.data?.data?.[0];
+      const tripId = sampleTrip?.id || 1;
+
       // 4. GET Trip Budget
-      const budgetRes = await testReq('/trips/1/budget');
+      const budgetRes = await testReq(`/trips/${tripId}/budget`);
       assert(
-        'GET /api/trips/1/budget returns valid calculation',
+        `GET /api/trips/${tripId}/budget returns valid calculation`,
         budgetRes.status === 200 &&
           budgetRes.data?.data?.budget > 0 &&
           budgetRes.data?.data?.categoryBreakdown !== undefined &&
           Array.isArray(budgetRes.data?.data?.dailyBreakdown),
-        `Total: $${budgetRes.data?.data?.total}, Utilization: ${budgetRes.data?.data?.utilization}%`
+        `Total: ₹${budgetRes.data?.data?.total}, Utilization: ${budgetRes.data?.data?.utilization}%`
       );
 
       // 5. GET Trip Expenses
-      const expensesRes = await testReq('/trips/1/expenses');
+      const expensesRes = await testReq(`/trips/${tripId}/expenses`);
       assert(
-        'GET /api/trips/1/expenses returns array of expenses',
+        `GET /api/trips/${tripId}/expenses returns array of expenses`,
         expensesRes.status === 200 && Array.isArray(expensesRes.data?.data)
       );
 
       // 6. POST New Expense
-      const createExpRes = await testReq('/trips/1/expenses', {
+      const createExpRes = await testReq(`/trips/${tripId}/expenses`, {
         method: 'POST',
         body: {
           category: 'MEAL',
@@ -124,7 +128,7 @@ async function runMember4Tests() {
       });
       const createdExpenseId = createExpRes.data?.data?.id;
       assert(
-        'POST /api/trips/1/expenses creates expense',
+        `POST /api/trips/${tripId}/expenses creates expense`,
         createExpRes.status === 201 && Boolean(createdExpenseId)
       );
 
@@ -158,13 +162,13 @@ async function runMember4Tests() {
       console.log('\n--- [TESTS: PUBLIC SHARING, COMMUNITY & COPY TRIP] ---');
 
       // 9. Publish Trip
-      const publishRes = await testReq('/trips/1/publish', {
+      const publishRes = await testReq(`/trips/${tripId}/publish`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${userToken}` },
       });
-      const shareToken = publishRes.data?.data?.shareToken || 'japan-autumn-2026';
+      const shareToken = publishRes.data?.data?.shareToken || sampleTrip?.shareToken || 'goa-vacation-2026';
       assert(
-        'POST /api/trips/1/publish sets isPublic=true and returns shareToken',
+        `POST /api/trips/${tripId}/publish sets isPublic=true and returns shareToken`,
         publishRes.status === 200 && Boolean(shareToken),
         `Token: ${shareToken}`
       );

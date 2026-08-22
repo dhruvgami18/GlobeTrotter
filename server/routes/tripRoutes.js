@@ -14,6 +14,8 @@ const {
   addItineraryItem,
   reorderTripItinerary,
 } = require('../controllers/itineraryController');
+const { getTripBudget } = require('../controllers/budgetController');
+const { getTripExpenses, createExpense } = require('../controllers/expenseController');
 
 // Trip CRUD
 router.get('/', getTrips);
@@ -30,5 +32,10 @@ router.post('/:tripId/stops', addTripStop);
 router.get('/:tripId/itinerary', getTripItinerary);
 router.post('/:tripId/itinerary', addItineraryItem);
 router.put('/:tripId/itinerary/reorder', reorderTripItinerary);
+
+// Trip Budget & Expenses
+router.get('/:tripId/budget', getTripBudget);
+router.get('/:tripId/expenses', getTripExpenses);
+router.post('/:tripId/expenses', createExpense);
 
 module.exports = router;
